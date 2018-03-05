@@ -107,7 +107,7 @@ module Artifactory
     # @return (see Client#request)
     #
     def get(path, params = {}, headers = {}, &block)
-      @logger.info("[GET] path: #{path}, data: #{data.inspect}, headers: #{headers.inspect}")
+      @logger.info("[GET] path: #{path}, params: #{params.inspect}, headers: #{headers.inspect}")
       request(:get, path, params, headers, &block)
     end
 
@@ -168,7 +168,7 @@ module Artifactory
     # @return (see Client#request)
     #
     def delete(path, params = {}, headers = {})
-      @logger.info("[DELETE] path: #{path}, data: #{data.inspect}, headers: #{headers.inspect}")
+      @logger.info("[DELETE] path: #{path}, params: #{params.inspect}, headers: #{headers.inspect}")
       request(:delete, path, params, headers)
     end
 
