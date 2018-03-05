@@ -18,6 +18,7 @@ require "cgi"
 require "json"
 require "net/http"
 require "uri"
+require 'logger'
 
 module Artifactory
   #
@@ -66,6 +67,8 @@ module Artifactory
     # @return [Artifactory::Client]
     #
     def initialize(options = {})
+      @logger = Logger.new(STDOUT)
+      
       # Use any options given, but fall back to the defaults set on the module
       Artifactory::Configurable.keys.each do |key|
         value = if options[key].nil?
@@ -104,6 +107,7 @@ module Artifactory
     # @return (see Client#request)
     #
     def get(path, params = {}, headers = {}, &block)
+      @logger.info("[GET] path: #{path}, data: #{data.inspect}, headers: #{headers.inspect}")
       request(:get, path, params, headers, &block)
     end
 
@@ -119,6 +123,7 @@ module Artifactory
     # @return (see Client#request)
     #
     def post(path, data, headers = {})
+      @logger.info("[POST] path: #{path}, data: #{data.inspect}, headers: #{headers.inspect}")
       request(:post, path, data, headers)
     end
 
@@ -133,6 +138,7 @@ module Artifactory
     # @return (see Client#request)
     #
     def put(path, data, headers = {})
+      @logger.info("[PUT] path: #{path}, data: #{data.inspect}, headers: #{headers.inspect}")
       request(:put, path, data, headers)
     end
 
@@ -147,6 +153,7 @@ module Artifactory
     # @return (see Client#request)
     #
     def patch(path, data, headers = {})
+      @logger.info("[PATCH] path: #{path}, data: #{data.inspect}, headers: #{headers.inspect}")
       request(:patch, path, data, headers)
     end
 
@@ -161,6 +168,7 @@ module Artifactory
     # @return (see Client#request)
     #
     def delete(path, params = {}, headers = {})
+      @logger.info("[DELETE] path: #{path}, data: #{data.inspect}, headers: #{headers.inspect}")
       request(:delete, path, params, headers)
     end
 
@@ -205,7 +213,7 @@ module Artifactory
       elsif api_key
         request.add_field("X-JFrog-Art-Api", api_key)
       end
-
+      
       # Setup PATCH/POST/PUT
       if [:patch, :post, :put].include?(verb)
         if data.respond_to?(:read)
@@ -217,7 +225,9 @@ module Artifactory
           request.body = data
         end
       end
-
+      
+      @logger.info("[REQUEST] request: #{request.inspect}")
+      
       # Create the HTTP connection object - since the proxy information defaults
       # to +nil+, we can just pass it to the initializer method instead of doing
       # crazy strange conditionals.
