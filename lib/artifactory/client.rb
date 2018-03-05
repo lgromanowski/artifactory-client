@@ -226,7 +226,8 @@ module Artifactory
         end
       end
       
-      @logger.info("[REQUEST] uri host: #{uri.host}, uri port: #{uri.port},\n\trequest: uri: #{request&.uri}, path: uri: #{request&.path}, body: #{request&.body}\n")
+      @logger.info("[REQUEST] request: #{uri.scheme}://#{uri.host}#{request.path.to_s}, body: '#{request.body.to_s}'\n")
+      request.each_header { |key, value| @logger.info("[REQUEST] headers: #{key} => #{value}") }
       
       # Create the HTTP connection object - since the proxy information defaults
       # to +nil+, we can just pass it to the initializer method instead of doing
